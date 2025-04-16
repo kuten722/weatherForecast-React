@@ -62,3 +62,59 @@ export async function getGeoInfo(input) {
   }
 }
 
+
+geoRequest.interceptors.request.use(
+    config => {
+      console.log('发起地理位置API请求');
+      return config;
+    },
+    error => {
+      console.error('地理位置API请求拦截器错误:', error);
+      return Promise.reject(error);
+    }
+  );
+  
+
+  geoRequest.interceptors.response.use(
+    response => {
+      return response;
+    },
+    error => {
+      console.error('地理位置API响应错误:', error);
+      return Promise.reject(error);
+    }
+  );
+  
+
+  weatherRequest.interceptors.request.use(
+    config => {
+      config.params = {
+        ...config.params,
+        appid: WEATHER_API_KEY,
+        units: 'metric'
+      };
+      console.log('发起天气API请求');
+      return config;
+    },
+    error => {
+      console.error('天气API请求拦截器错误:', error);
+      return Promise.reject(error);
+    }
+  );
+  
+
+  weatherRequest.interceptors.response.use(
+    response => {
+      return response;
+    },
+    error => {
+      if (error.response) {
+        console.error(`天气API错误: ${error.response.status}`, error.response.data);
+      } else if (error.request) {
+        console.error('天气API没有响应:', error.request);
+      } else {
+        console.error('天气API请求配置错误:', error.message);
+      }
+      return Promise.reject(error);
+    }
+  );
