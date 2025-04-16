@@ -65,6 +65,7 @@ export async function getGeoInfo(input) {
 
 geoRequest.interceptors.request.use(
     config => {
+      config.metadata = { startTime: new Date() };
       console.log('发起地理位置API请求');
       return config;
     },
@@ -74,9 +75,11 @@ geoRequest.interceptors.request.use(
     }
   );
   
-
   geoRequest.interceptors.response.use(
     response => {
+      const endTime = new Date();
+      const duration = endTime - response.config.metadata.startTime;
+      console.log(`地理位置API请求耗时: ${duration}ms`);
       return response;
     },
     error => {
@@ -85,9 +88,9 @@ geoRequest.interceptors.request.use(
     }
   );
   
-
   weatherRequest.interceptors.request.use(
     config => {
+      config.metadata = { startTime: new Date() };
       config.params = {
         ...config.params,
         appid: WEATHER_API_KEY,
@@ -102,9 +105,11 @@ geoRequest.interceptors.request.use(
     }
   );
   
-
   weatherRequest.interceptors.response.use(
     response => {
+      const endTime = new Date();
+      const duration = endTime - response.config.metadata.startTime;
+      console.log(`天气API请求耗时: ${duration}ms`);
       return response;
     },
     error => {
