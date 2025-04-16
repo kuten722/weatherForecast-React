@@ -1,27 +1,32 @@
 import { useState } from "react";
 import { AsyncPaginate } from "react-select-async-paginate";
-import { geoApiConfig, GEO_REQUEST_URL } from "../../netWorkConfig";
+import { geoRequest } from "../../netWorkConfig";
 
 const Search = ({ onSearchChange }) => {
     const [search, setSearch] = useState(null);
 
-    const loadOptions = (inputValue) => {
-        console.log(inputValue);
-        return fetch(`${GEO_REQUEST_URL}/cities?minPopulation=1000000&namePrefix=${inputValue}`, 
-            geoApiConfig)
-            .then((response) => response.json())
-            .then((response) => {
-                return({
-                    options:response.data.map((city) => {
-                        console.log(`search.js:${[city.latitude,city.longitude,city.name,city.countryCode]}`);
-                        return {
-                            value:`${city.latitude} ${city.longitude}`,
-                            label:`${city.name},${city.countryCode}`
-                        }
-                    })
-                })
+      const loadOptions = async (inputValue) => {
+        try {
+          const response = await geoRequest.get('', {
+            params: {
+              minPopulation: 1000000,
+              namePrefix: inputValue
+            }
+          });
+          // 假设这是在 loadOptions 函数内部
+          return {
+            options: response.data.data.map((city) => {
+              return {
+                value: `${city.latitude} ${city.longitude}`,
+                label: `${city.name}, ${city.countryCode}`
+              };
             })
-    }
+          };
+        } catch (error) {
+          console.error("geoInfo:", error);
+          return { options: [] };
+        }
+      }
 
     const handleOnChange = (searchData) => {
         setSearch(searchData);
