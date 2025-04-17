@@ -80,6 +80,7 @@ geoRequest.interceptors.request.use(
       const endTime = new Date();
       const duration = endTime - response.config.metadata.startTime;
       console.log(`地理位置API请求耗时: ${duration}ms`);
+      console.dir(response);
       return response;
     },
     error => {
@@ -110,6 +111,7 @@ geoRequest.interceptors.request.use(
       const endTime = new Date();
       const duration = endTime - response.config.metadata.startTime;
       console.log(`天气API请求耗时: ${duration}ms`);
+      console.dir(response);
       return response;
     },
     error => {

@@ -2,7 +2,7 @@ import { useState, Suspense, lazy } from 'react';
 import './App.css';
 import { getCurrentWeather, getWeatherForecast } from './netWorkConfig.js';
 import PromiseTest from './components/PromiseTest/PromiseTest.js';
-const Search = lazy(() => import('./components/search/search'));
+import Search from './components/search/search';
 const WeatherNow = lazy(() => import('./components/weatherNow/weatherNow'));
 const Forecast = lazy(() => import('./components/forecast/forecast.js'));
 
@@ -50,13 +50,15 @@ function App() {
       >
         {showWeather ? '切换到性能测试' : '切换到天气预报'}
       </button>
-
+  
       {showWeather ? (
-        <Suspense fallback={<div>加载中...</div>}>
+        <div>
           <Search onSearchChange={handleOnSearchChange} />
-          {nowWeather && <WeatherNow data={nowWeather} />}
-          {nxtWeather && <Forecast data={nxtWeather} />}
-        </Suspense>
+          <Suspense fallback={<div>加载中...</div>}>
+            {nowWeather && <WeatherNow data={nowWeather} />}
+            {nxtWeather && <Forecast data={nxtWeather} />}
+          </Suspense>
+        </div>
       ) : (
         <PromiseTest />
       )}
